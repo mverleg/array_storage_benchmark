@@ -7,7 +7,7 @@ from numpy import arange, mean, std
 def add_bar_labels(ax, patches, values, xlim=None, fontsize=16, template='{0:.3f}'):
 	xlim = xlim or ax.get_xlim()[1]
 	for rect, val in zip(patches, values):
-		ax.text(min(rect.get_x() + rect.get_width() + xlim / 10, xlim*0.88),
+		ax.text(min(rect.get_x() + rect.get_width() + xlim * 0.03, xlim*0.88),
 			rect.get_y() + rect.get_height() / 2, template.format(rect.get_width()),
 			ha='left', va='center', fontsize=fontsize)
 
@@ -16,11 +16,11 @@ def plot_results(insts, fname='benchmark.png', suptitle='Benchmark result'):
 	"""
 	Make some bar charts with results
 	"""
-	fontsize = 16
+	fontsize = 15
 	cm = iter(seaborn.color_palette('colorblind'))
 	names = tuple(inst.label for inst in insts)
-	fig, ax = subplots(figsize=(9, 10), tight_layout=False)
-	fig.subplots_adjust(left=0.16, right=0.96, bottom=0.08, top=0.88)
+	fig, ax = subplots(figsize=(6.5, 9), tight_layout=False)
+	fig.subplots_adjust(left=0.18, right=0.96, bottom=0.08, top=0.88)
 	indx = - arange(0, len(insts))
 	height = 0.2
 	twax = ax.twiny()
@@ -46,9 +46,9 @@ def plot_results(insts, fname='benchmark.png', suptitle='Benchmark result'):
 	twax.set_xlabel('disk space use (Mb)', fontsize=fontsize)
 	ax.grid(axis='y')
 	twax.grid('off')
-	ax.legend((lsave, lload, lmem), ('store', 'retrieve', 'disk space'), loc='upper right', fontsize=fontsize, frameon=True)
-	fig.suptitle(suptitle, fontsize=fontsize+4)
-	fig.savefig(fname, dpi=450)
+	ax.legend((lsave, lload, lmem), ('store', 'retrieve', 'disk space'), loc='lower right', fontsize=fontsize, frameon=True)
+	fig.suptitle(suptitle, fontsize=fontsize+2)
+	fig.savefig(fname)
 	return fig, ax
 
 

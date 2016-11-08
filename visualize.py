@@ -18,7 +18,7 @@ def plot_results(insts, fname='benchmark.png'):
 	"""
 	fontsize = 16
 	cm = iter(seaborn.color_palette('colorblind'))
-	names = tuple(str(inst) for inst in insts)
+	names = tuple(inst.label for inst in insts)
 	fig, ax = subplots(figsize=(9, 10), tight_layout=False)
 	fig.subplots_adjust(left=0.16, right=0.96, bottom=0.08, top=0.88)
 	indx = - arange(0, len(insts))
@@ -33,7 +33,8 @@ def plot_results(insts, fname='benchmark.png'):
 	lload = ax.barh(indx - 0.6, tuple(inst.load_time for inst in insts), height=height, color=next(cm), label='retrieve',
 		xerr=tuple(inst.load_time_std for inst in insts))
 	add_bar_labels(ax, lload, load_times, xlim=xlim, fontsize=fontsize-3, template='{0:.3f}s')
-	lmem  = twax.barh(indx - 0.9, tuple(inst.storage_space / 1024.**2 for inst in insts), height=height, color=next(cm), label='disk space')
+	lmem  = twax.barh(indx - 0.9, tuple(inst.storage_space / 1024.**2 for inst in insts), height=height, color=next(cm),
+		label='disk space', xerr=tuple(inst.storage_space for inst in insts))
 	add_bar_labels(twax, lmem, load_times, fontsize=fontsize-3, template='{0:.2f}Mb')
 	ax.set_ylim([- len(insts), 0])
 	ax.set_xlim([0, xlim])
@@ -49,3 +50,5 @@ def plot_results(insts, fname='benchmark.png'):
 	fig.savefig(fname)
 	ax.legend((lsave, lload, lmem), ('store', 'retrieve', 'disk space'), loc='upper right', fontsize=fontsize, frameon=True)
 	return fig, ax
+
+

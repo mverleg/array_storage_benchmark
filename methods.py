@@ -57,9 +57,6 @@ class TimeArrStorage(object):
 		remove(pth)
 		assert array_equal(arr, ref_arr), 'load failed for {0:}'.format(self)
 	
-	# def log(self):
-	# 	print('{0:12s}  {1:8.6f}s  {2:8.6f}s  {3:6.0f}kb'.format(self, self.save_time, self.load_time, self.storage_space/1024.))
-
 
 class Csv(TimeArrStorage):
 	def save(self, arr, pth):
@@ -185,7 +182,7 @@ class FortUnf(TimeArrStorage):
 	def save(self, arr, pth):
 		with FortranFile(pth, mode='wb+') as fh:
 			for k in range(arr.shape[0]):
-				fh.writeReals(arr[k, :], prec='d')  #todo: is this the correct index for fastness?
+				fh.writeReals(arr[k, :], prec='d')
 			sync(fh)
 
 	def load(self, pth):

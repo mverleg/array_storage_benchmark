@@ -1,6 +1,7 @@
 
 from os import environ
 from os.path import join, exists
+from sys import argv
 from tempfile import mkdtemp
 from json_tricks import load as jt_load, dump as jt_dump
 from matplotlib.pyplot import show
@@ -21,6 +22,7 @@ class Benchmark(object):
 		self.reps = int(reps)
 		self.todo = []
 		self.done = []
+		self.label = self.cls.__name__
 		for k in range(reps):
 			pth = 'cache/{0:s}.{1:s}.{2:03d}.json'.format(self.cls.__name__, self.data_name, k)
 			if exists(pth):
@@ -89,25 +91,14 @@ def load_example_data():
 	return loadtxt(join(environ['HOME'], 'testdata.csv'), delimiter=',')
 
 
-# def run_benchmark(data, insts):
-# 	"""
-# 	Run benchmark
-# 	"""
-# 	for inst in insts:
-# 		inst.time_save(data)
-# 		inst.time_load(data)
-# 		inst.log()
-
- 
 """
 Setup & params
 """
 clss = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickler, PickleGzip, Binary, NPY, NPYCompr, PNG, FortUnf, MatFile)
-# clss = (PNG, FortUnf, MatFile)
 
 
 if __name__ == '__main__':
-	reps = 3
+	reps = int(argv[1]) if len(argv) > 1 else 30
 	size = (1000, 400)
 	for data, name, label in (
 		(random_data(size, is_sparse=True), 'sparse', 'Sparse(0.01) random array'),
@@ -115,20 +106,13 @@ if __name__ == '__main__':
 		(load_example_data(), 'example', 'Real data'),
 	):
 		print '>> benchmark {0:s} <<'.format(name)
-		# cache_pth = 'results_{0:s}_{1:d}x.json'.format(name, rep)
-		# if exists(cache_pth):
-		# 	print('loading {0:s} for cache'.format(name))
-		# 	sinsts = jt_load(cache_pth)
-		# else:
 		insts = tuple(Benchmark(cls, data, reps=reps) for cls in clss)
 		for bm in insts:
 			bm.run()
 			bm.log()
-		# run_benchmark(data, insts)
 		sinsts = sorted(insts, key=lambda inst: (inst.save_time + inst.load_time) * inst.storage_space)
-		# jt_dump(sinsts, cache_pth, indent=2)
 		fig, ax = plot_results(sinsts, fname='benchmark_{0:s}_data.png'.format(name))
-		fig.suptitle('{1:s} storage performance ({2:d}x{3:d}, avg of {0:d}x)'.format(reps, label, *size), fontsize=20)
+		fig.suptitle('{1:s} storage performance ({2:d}x{3:d}, avg of {0:d}x)'.format(reps, label, *data.shape), fontsize=20)
 	show()
 
 

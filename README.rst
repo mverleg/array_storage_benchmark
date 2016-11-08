@@ -14,7 +14,9 @@ Results
 Dense random matrix
 =======================================
 
-.. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmark/master/result/bm_random.png
+.. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmarkmaster/result/bm_random.png
+
+.. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmarkmaster/result/bm_long.png
 
 Sparse random matrix
 =======================================

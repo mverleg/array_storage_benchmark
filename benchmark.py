@@ -35,9 +35,11 @@ class Benchmark(object):
 	@property
 	def save_time(self):
 		assert self.done
-		mn, mx = mean(tuple(inst.save_time for inst in self.done)), max(tuple(inst.save_time for inst in self.done))
-		if mx > 2 * mn:
-			print(self.cls.__name__, mn, mx)
+		# mn, mx, st = mean(tuple(inst.save_time for inst in self.done)), max(tuple(inst.save_time for inst in self.done)), std(tuple(inst.save_time for inst in self.done))
+		# if mx > 2 * mn:  #todo
+		# 	print('max', self.cls.__name__, mn, mx)
+		# if st > 0.2 * mn:
+		# 	print('std', self.cls.__name__, mn, st)
 		return mean(tuple(inst.save_time for inst in self.done))
 	
 	@property
@@ -53,12 +55,12 @@ class Benchmark(object):
 	@property
 	def save_time_std(self):
 		assert self.done
-		return std(tuple(inst.storage_space for inst in self.done))
+		return std(tuple(inst.save_time for inst in self.done))
 	
 	@property
 	def load_time_std(self):
 		assert self.done
-		return std(tuple(inst.storage_space for inst in self.done))
+		return std(tuple(inst.load_time for inst in self.done))
 	
 	@property
 	def storage_space_std(self):
@@ -78,8 +80,8 @@ class Benchmark(object):
 			self.done.append(inst)
 	
 	def log(self):
-		print('{0:12s}  {4:2d}/{5:2d}  {1:8.6f}s  {2:8.6f}s  {3:6.0f}kb'.format(self.cls.__name__, self.save_time,
-			self.load_time, self.storage_space/1024., len(self.done), self.reps))
+		print('{0:12s}  {4:2d}/{5:2d}  {1:8.6f}+-{6:8.6f}s  {2:8.6f}+-{7:8.6f}s  {3:6.0f}+-{8:8.6f}kb'.format(self.cls.__name__, self.save_time,
+			self.load_time, self.storage_space/1024., len(self.done), self.reps, self.save_time_std, self.load_time_std, self.storage_space_std/1024.))
 
 
 def random_data(size, is_sparse=False):
@@ -113,8 +115,8 @@ if __name__ == '__main__':
 		for bm in insts:
 			bm.run()
 			bm.log()
-		sinsts = sorted(insts, key=lambda inst: (inst.save_time + inst.load_time) * inst.storage_space)
-		fig, ax = plot_results(sinsts, fname='bm_{0:s}.png'.format(name),
+		# sinsts = sorted(insts, key=lambda inst: (inst.save_time + inst.load_time) * inst.storage_space)
+		fig, ax = plot_results(insts, fname='bm_{0:s}.png'.format(name),
 			suptitle='{1:s} storage performance ({2:d}x{3:d}, avg of {0:d}x)'.format(reps, label, *data.shape))
 	show()
 

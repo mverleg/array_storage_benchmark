@@ -8,6 +8,7 @@ from time import time
 from fortranfile import FortranFile
 from json_tricks import dump as jt_dump, load as jt_load
 from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
+from pandas import read_stata, DataFrame
 from scipy.io import savemat, loadmat
 from imgarray import save_array_img, load_array_img
 
@@ -215,6 +216,42 @@ class MatFile(TimeArrStorage):
 			return loadmat(fh)['data']
 
 
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile)
+class Stata(TimeArrStorage):
+	# converts to and from DataFrame since it's a pandas method
+	extension = 'sta'
+	def save(self, arr, pth):
+		# print(arr)
+		with open(pth, 'w+') as fh:
+			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
+			data = DataFrame(data=arr, columns=colnames)
+			print(data.tail())
+			data.to_stata(fh)
+			# sync(fh)  # file handle already closed
+
+	def load(self, pth):
+		with open(pth, 'r') as fh:
+			data = read_stata(fh)
+			print(data.tail())
+			arr = data.as_matrix(columns=data.columns[1:])
+			# print(arr)
+			return arr
+			# print(data.dtype, data.shape)
+			# return read_stata(fh).as_matrix()
+
+
+#todo: pandas formats - http://pandas.pydata.org/pandas-docs/stable/io.html
+# html
+# excel
+# hdf5
+# sql
+
+#todo: hdf5 - http://stackoverflow.com/a/9619713/723090
+
+#todo: bloscpack http://stackoverflow.com/a/22225337/723090
+
+#todo: pytables
+
+
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile, Stata)
 
 

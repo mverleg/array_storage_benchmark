@@ -1,14 +1,13 @@
+
 from os import environ
 from os.path import join, exists
 from sys import argv
 from tempfile import mkdtemp
-
 from json_tricks import load as jt_load, dump as jt_dump
 from matplotlib.pyplot import show
 from numpy import mean, loadtxt, array, std
 from numpy.random import RandomState
 from scipy import sparse
-
 from methods import METHODS
 from visualize import plot_results
 
@@ -16,10 +15,14 @@ from visualize import plot_results
 class Benchmark(object):
 	extension = 'data'
 	
-	def __init__(self, cls, data, reps=50):
+	def __init__(self, cls, data, data_name=None, reps=50):
 		self.cls = cls
 		self.data = data
-		self.data_name = str(hash(data.tobytes())).replace('-', '')[:8]
+		if data_name:
+			self.data_name = data_name
+		else:
+			self.data_name = str(hash(data.tobytes())).replace('-', '')[:8]
+		print(self.data_name)
 		self.reps = int(reps)
 		self.todo = []
 		self.done = []
@@ -85,12 +88,15 @@ class Benchmark(object):
 			self.load_time, self.storage_space/1024., len(self.done), self.reps, self.save_time_std, self.load_time_std, self.storage_space_std/1024.))
 
 
-def random_data(size, is_sparse=False):
+def random_data(size, is_sparse=False, is_big=True):
 	rs = RandomState(seed=123456789)
 	if is_sparse:
-		return array(sparse.rand(size[0], size[1], density=0.01, random_state=rs).todense())
+		arr = array(sparse.rand(size[0], size[1], density=0.01, random_state=rs).todense())
 	else:
-		return (2 * rs.rand(*size).astype('float64') - 1) * 1.7976931348623157e+308
+		arr = rs.rand(*size).astype('float64')
+	if is_big:
+		arr = (2 * arr - 1) * 1.7976931348623157e+308
+	return arr
 
 
 def load_example_data():
@@ -102,7 +108,7 @@ if __name__ == '__main__':
 	for data, name, label in (
 		(random_data((1000, 400)), 'random', 'Random array'),
 		(random_data((1000, 400), is_sparse=True), 'sparse', 'Sparse (0.01)'),
-		(random_data((100000, 3)), 'long', 'Long array'),
+		(random_data((100000, 3), is_big=False), 'long', 'Long array'),
 		(load_example_data(), 'example', 'Real data'),
 	):
 		print '>> benchmark {0:s} <<'.format(name)

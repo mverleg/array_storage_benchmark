@@ -10,16 +10,13 @@ data = (2 * rs.rand(1000, 400).astype('float64') - 1) * 1.7976931348623157e+308
 
 colnames = tuple('c{0:03d}'.format(k) for k in range(data.shape[1]))
 frame = DataFrame(data=data, columns=colnames)
-with open(pth, 'w+') as fh:
+with open(pth, 'wb+') as fh:
 	frame.to_stata(fh)
 
-with open(pth, 'r') as fh:
+with open(pth, 'rb') as fh:
 	frame2 = read_stata(fh)
 
 print(frame2.tail())
-
-import pandas
-pandas.show_versions()
 
 """
      index          c000           c001           c002           c003  \

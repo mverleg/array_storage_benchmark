@@ -8,7 +8,7 @@ from time import time
 from fortranfile import FortranFile
 from json_tricks import dump as jt_dump, load as jt_load
 from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
-from pandas import read_stata, DataFrame
+from pandas import read_stata, DataFrame, read_html, read_excel
 from scipy.io import savemat, loadmat
 from imgarray import save_array_img, load_array_img
 
@@ -220,28 +220,52 @@ class Stata(TimeArrStorage):
 	# converts to and from DataFrame since it's a pandas method
 	extension = 'sta'
 	def save(self, arr, pth):
-		# print(arr)
-		with open(pth, 'w+') as fh:
+		with open(pth, 'wb+') as fh:
 			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
-			data = DataFrame(data=arr, columns=colnames)
-			print(data.tail())
-			data.to_stata(fh)
+			DataFrame(data=arr, columns=colnames).to_stata(fh)
 			# sync(fh)  # file handle already closed
 
 	def load(self, pth):
-		with open(pth, 'r') as fh:
+		with open(pth, 'rb') as fh:
 			data = read_stata(fh)
-			print(data.tail())
+			return data.as_matrix(columns=data.columns[1:])
+
+
+class HTML(TimeArrStorage):
+	def save(self, arr, pth):
+		print(arr.dtype, arr.shape)
+		print(arr)
+		with open(pth, 'w+') as fh:
+			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
+			DataFrame(data=arr, columns=colnames).to_html(fh, float_format='{:}')
+			sync(fh)
+
+	def load(self, pth):
+		with open(pth, 'r') as fh:
+			data = read_html(fh)[0]
 			arr = data.as_matrix(columns=data.columns[1:])
-			# print(arr)
-			return arr
-			# print(data.dtype, data.shape)
-			# return read_stata(fh).as_matrix()
+			print(arr.dtype, arr.shape)
+			print(arr)
+			return data.as_matrix(columns=data.columns[1:])
+
+
+class Excel(TimeArrStorage):
+	def save(self, arr, pth):
+		print(arr)
+		with open(pth, 'w+') as fh:
+			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
+			DataFrame(data=arr, columns=colnames).to_excel(fh, sheet_name='data')
+			sync(fh)
+
+	def load(self, pth):
+		with open(pth, 'r') as fh:
+			data = read_excel(fh, sheetname='data')
+			print(data.as_matrix(columns=data.columns[1:]))
+			return data.as_matrix(columns=data.columns[1:])
+
 
 
 #todo: pandas formats - http://pandas.pydata.org/pandas-docs/stable/io.html
-# html
-# excel
 # hdf5
 # sql
 
@@ -252,6 +276,8 @@ class Stata(TimeArrStorage):
 #todo: pytables
 
 
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile, Stata)
-
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
+#html
+#excel
+#stata
 

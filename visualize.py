@@ -48,7 +48,7 @@ def plot_results(insts, fname='benchmark.png', suptitle='Benchmark result'):
 	twax.grid('off')
 	ax.legend((lsave, lload, lmem), ('store', 'retrieve', 'disk space'), loc='upper right', fontsize=fontsize, frameon=True)
 	fig.suptitle(suptitle, fontsize=fontsize+4)
-	fig.savefig(fname)
+	fig.savefig(fname, dpi=450)
 	return fig, ax
 
 

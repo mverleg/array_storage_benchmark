@@ -106,7 +106,7 @@ if __name__ == '__main__':
 	reps = int(argv[1]) if len(argv) > 1 else 30
 	for data, name, label in (
 		(random_data((1000, 400)), 'random', 'Random array'),
-		(random_data((1000, 400), is_sparse=True), 'sparse', 'Sparse(0.01) random array'),
+		(random_data((1000, 400), is_sparse=True), 'sparse', 'Sparse(0.01) array'),
 		(random_data((100000, 3)), 'long', 'Long array'),
 		(load_example_data(), 'example', 'Real data'),
 	):

@@ -24,13 +24,9 @@ class TimeArrStorage(object):
 	extension = 'data'
 	
 	def __init__(self, reps=100):
-		# self.path = 'data-{0:s}.{1:s}'.format(self.__class__.__name__, self.extension)
 		self.save_time = None
 		self.load_time = None
 		self.storage_space = None
-		# self.reps = int(reps)
-		# self.paths = tuple(join(mkdtemp(), self.__class__.__name__.lower() + '{0:03d}.{1:s}'
-		# 	.format(k, self.extension)) for k in range(self.reps))
 	
 	def __str__(self):
 		return self.__class__.__name__
@@ -43,7 +39,6 @@ class TimeArrStorage(object):
 		raise NotImplementedError
 	
 	def time_save(self, arr, pth):
-		# for pth in self.paths:
 		t0 = time()
 		self.save(arr, pth)
 		self.save_time = time() - t0
@@ -53,7 +48,6 @@ class TimeArrStorage(object):
 		t0 = time()
 		arr = self.load(pth)
 		self.load_time = time() - t0
-		# self.storage_spaces = getsize(pth)
 		remove(pth)
 		assert array_equal(arr, ref_arr), 'load failed for {0:}'.format(self)
 	
@@ -97,7 +91,19 @@ class JSONGzip(TimeArrStorage):
 
 
 class Binary(TimeArrStorage):
-	#todo: this one is suspiciously slow
+	def save(self, arr, pth):
+		with open(pth, 'wb+') as fh:
+			fh.write(b'{0:s} {1:d} {2:d}\n'.format(arr.dtype, *arr.shape))
+			fh.write(arr.data)
+			sync(fh)
+
+	def load(self, pth):
+		with open(pth, 'rb') as fh:
+			dtype, w, h = str(fh.readline()).split()
+			return frombuffer(fh.read(), dtype=dtype).reshape((int(w), int(h)))
+
+
+class BinaryGzip(TimeArrStorage):
 	def save(self, arr, pth):
 		with gzip.open(pth, 'wb+') as fh:
 			fh.write(b'{0:s} {1:d} {2:d}\n'.format(arr.dtype, *arr.shape))
@@ -110,7 +116,7 @@ class Binary(TimeArrStorage):
 			return frombuffer(fh.read(), dtype=dtype).reshape((int(w), int(h)))
 
 
-class Pickler(TimeArrStorage):
+class Pickle(TimeArrStorage):
 	def save(self, arr, pth):
 		with open(pth, 'wb+') as fh:
 			pkl_dump(arr, fh)
@@ -207,5 +213,8 @@ class MatFile(TimeArrStorage):
 	def load(self, pth):
 		with open(pth, 'r') as fh:
 			return loadmat(fh)['data']
+
+
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile)
 
 

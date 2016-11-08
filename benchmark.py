@@ -103,7 +103,7 @@ clss = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickler, PickleGzip, Binary, NPY, 
 
 
 if __name__ == '__main__':
-	rep, size = 50, (1000, 400)
+	rep, size = 2, (1000, 400)
 	for data, name, label in (
 		(random_data(size, is_sparse=True), 'sparse', 'Sparse(0.01) random array'),
 		(random_data(size), 'random', 'Dense random array'),

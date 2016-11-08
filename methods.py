@@ -9,7 +9,7 @@ from tempfile import mkdtemp
 from time import time
 from fortranfile import FortranFile
 from json_tricks import dump as jt_dump, load as jt_load
-from numpy import mean, array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
+from numpy import mean, array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array, std
 from scipy.io import savemat, loadmat
 from imgarray import save_array_img, load_array_img
 
@@ -26,12 +26,36 @@ class TimeArrStorage(object):
 	extension = 'data'
 	
 	def __init__(self, reps=100):
-		self.save_time = None
-		self.load_time = None
-		self.storage_space = None
+		self.save_times = []
+		self.load_times = []
+		self.storage_spaces = []
 		self.reps = int(reps)
 		self.paths = tuple(join(mkdtemp(), self.__class__.__name__.lower() + '{0:03d}.{1:s}'
 			.format(k, self.extension)) for k in range(self.reps))
+	
+	@property
+	def save_time(self):
+		return mean(self.save_times)
+	
+	@property
+	def load_time(self):
+		return mean(self.load_times)
+	
+	@property
+	def storage_space(self):
+		return mean(self.storage_spaces)
+	
+	@property
+	def save_time_std(self):
+		return std(self.save_times)
+	
+	@property
+	def load_time_std(self):
+		return std(self.load_times)
+	
+	@property
+	def storage_space_std(self):
+		return std(self.storage_spaces)
 	
 	def __str__(self):
 		return self.__class__.__name__
@@ -44,18 +68,19 @@ class TimeArrStorage(object):
 		raise NotImplementedError
 	
 	def time_save(self, arr):
-		t0 = time()
 		for pth in self.paths:
+			t0 = time()
 			self.save(arr, pth)
-		self.save_time = (time() - t0) / self.reps
-		self.storage_space = mean(tuple(getsize(pth) for pth in self.paths))
+			self.save_times.append((time() - t0))
+		self.storage_spaces = tuple(getsize(pth) for pth in self.paths)
 	
 	def time_load(self, ref_arr):
-		t0 = time()
 		arr = None
 		for pth in self.paths:
+			t0 = time()
 			arr = self.load(pth)
-		self.load_time = (time() - t0) / self.reps
+			self.load_times.append((time() - t0))
+		self.storage_spaces = tuple(getsize(pth) for pth in self.paths)
 		for pth in self.paths:
 			remove(pth)
 		assert array_equal(arr, ref_arr), 'load failed for {0:}'.format(self)

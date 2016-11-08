@@ -12,7 +12,7 @@ def add_bar_labels(ax, patches, values, xlim=None, fontsize=16, template='{0:.3f
 			ha='left', va='center', fontsize=fontsize)
 
 
-def plot_results(insts, fname='benchmark.png'):
+def plot_results(insts, fname='benchmark.png', suptitle='Benchmark result'):
 	"""
 	Make some bar charts with results
 	"""
@@ -46,8 +46,9 @@ def plot_results(insts, fname='benchmark.png'):
 	twax.set_xlabel('disk space use (Mb)', fontsize=fontsize)
 	ax.grid(axis='y')
 	twax.grid('off')
-	fig.savefig(fname)
 	ax.legend((lsave, lload, lmem), ('store', 'retrieve', 'disk space'), loc='upper right', fontsize=fontsize, frameon=True)
+	fig.suptitle(suptitle, fontsize=fontsize+4)
+	fig.savefig(fname)
 	return fig, ax
 
 

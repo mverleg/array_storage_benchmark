@@ -11,7 +11,24 @@ The results here are obtained on a normal desktop PC that's several years old an
 Results
 ---------------------------------------
 
+Dense random matrix
+=======================================
 
+.. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmark/master/result/bm_random.png
+
+Sparse random matrix
+=======================================
+
+99% of values are zero, so compression ratios are very good.
+
+.. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmark/master/result/bm_sparse.png
+
+Real data
+=======================================
+
+Scattering probabilities for hydrogen and carbon monoxide (many doubles between 0 and 1, most close to 0).
+
+.. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmark/master/result/bm_example.png
 
 More methods
 ---------------------------------------

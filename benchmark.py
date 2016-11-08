@@ -102,10 +102,10 @@ clss = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickler, PickleGzip, Binary, NPY, 
 
 if __name__ == '__main__':
 	reps = int(argv[1]) if len(argv) > 1 else 30
-	size = (1000, 400)
 	for data, name, label in (
-		(random_data(size, is_sparse=True), 'sparse', 'Sparse(0.01) random array'),
-		(random_data(size), 'random', 'Dense random array'),
+		(random_data((1000, 400)), 'random', 'Random array'),
+		(random_data((1000, 400), is_sparse=True), 'sparse', 'Sparse(0.01) random array'),
+		(random_data((100000, 3)), 'long', 'Long array'),
 		(load_example_data(), 'example', 'Real data'),
 	):
 		print '>> benchmark {0:s} <<'.format(name)
@@ -114,8 +114,8 @@ if __name__ == '__main__':
 			bm.run()
 			bm.log()
 		sinsts = sorted(insts, key=lambda inst: (inst.save_time + inst.load_time) * inst.storage_space)
-		fig, ax = plot_results(sinsts, fname='benchmark_{0:s}_data.png'.format(name))
-		fig.suptitle('{1:s} storage performance ({2:d}x{3:d}, avg of {0:d}x)'.format(reps, label, *data.shape), fontsize=20)
+		fig, ax = plot_results(sinsts, fname='bm_{0:s}.png'.format(name),
+			suptitle='{1:s} storage performance ({2:d}x{3:d}, avg of {0:d}x)'.format(reps, label, *data.shape))
 	show()
 
 

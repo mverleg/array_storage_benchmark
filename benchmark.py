@@ -1,14 +1,15 @@
-
 from os import environ
 from os.path import join, exists
 from sys import argv
 from tempfile import mkdtemp
+
 from json_tricks import load as jt_load, dump as jt_dump
 from matplotlib.pyplot import show
 from numpy import mean, loadtxt, array, std
 from numpy.random import RandomState
 from scipy import sparse
-from methods import Csv, CsvGzip, JSON, JSONGzip, Binary, Pickler, PickleGzip, NPY, NPYCompr, PNG, b64Enc, FortUnf, MatFile
+
+from methods import METHODS
 from visualize import plot_results
 
 
@@ -96,12 +97,6 @@ def load_example_data():
 	return loadtxt(join(environ['HOME'], 'testdata.csv'), delimiter=',')
 
 
-"""
-Setup & params
-"""
-clss = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickler, PickleGzip, Binary, NPY, NPYCompr, PNG, FortUnf, MatFile)
-
-
 if __name__ == '__main__':
 	reps = int(argv[1]) if len(argv) > 1 else 30
 	for data, name, label in (
@@ -111,7 +106,7 @@ if __name__ == '__main__':
 		(load_example_data(), 'example', 'Real data'),
 	):
 		print '>> benchmark {0:s} <<'.format(name)
-		insts = tuple(Benchmark(cls, data, reps=reps) for cls in clss)
+		insts = tuple(Benchmark(cls, data, reps=reps) for cls in METHODS)
 		for bm in insts:
 			bm.run()
 			bm.log()

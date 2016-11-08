@@ -32,6 +32,29 @@ Scattering probabilities for hydrogen and carbon monoxide (many doubles between 
 
 .. image:: https://raw.githubusercontent.com/mverleg/array_storage_benchmark/master/result/bm_example.png
 
+Methods
+---------------------------------------
+
+=========  =======================  =======  =======  ============  ============  ===============  =========  ===========================
+Name       Description              Fast     Small-   Portability   Ease of use   Human-readable   Flexible   Notes
+=========  =======================  =======  =======  ============  ============  ===============  =========  ===========================
+Csv~       comma separated value    ☐ ☐ ☐    ☐ ☐ ☐    ☒ ☒ ☒         ☒ ☒ ☒         ☒ ☒              ☐          only 2D
+JSON~      js object notation       ☐ ☐ ☐    ☐ ☐ ☐    ☒ ☒ ☐         ☒ ☒ ☐ ++      ☒ ☐              ☒          any dim, unequal rows
+b64Enc     base 64 encoding         ☒ ☒ ☒    ☒ ☐ ☐    ☒ ☒ ☐         ☒ ☒ ☐         ☐ ☐              ☐          more network, not files
+Pickle~    python pickle            ☒ ☒ ☐    ☐ ☐ ☐    ☐ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☒          any obj, not backw. comp
+Binary~    pure raw data            ☒ ☒ ☒    ☒ ☒ ?    ☒ ☒ ☒         ☒ ☐ ☐         ☐ ☐              ☐          dim & type separately
+NPY        numpy .npy (no pickle)   ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☐          with pickle mode OFF
+NPYCompr   numpy .npz               ☒ ☒ ☒    ☒ ☒ ☒    ☒ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☐          multiple matrices
+PNG        encoded as png image     ☒ ☒ ☐    ☒ ☒ ☒    ☐ ☐ ☐         ☐ ☐ ☐ ++      ☐ ☐              ☐          only 2D; for fun but works
+FortUnf    fortran unformatted      ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☐ ☐         ☒ ☐ ☐ +       ☐ ☐              ☐          often compiler dependent
+MatFile    Matlab .mat file         ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☐         ☒ ☒ ☒ +       ☐ ☐              ☐          multiple matrices
+=========  =======================  =======  =======  ============  ============  ===============  =========  ===========================
+
+- Two checks for small if it's small for dense matrices, three checks if also for sparse ones.
+~ Also tested with gzip, stats refer to non-gzipped. Gzipped is always much slower to write, a slower to read, for text formats it's at least 50% smaller.
++ Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
+++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
+
 More methods
 ---------------------------------------
 

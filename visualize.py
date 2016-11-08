@@ -34,7 +34,7 @@ def plot_results(insts, fname='benchmark.png'):
 		xerr=tuple(inst.load_time_std for inst in insts))
 	add_bar_labels(ax, lload, load_times, xlim=xlim, fontsize=fontsize-3, template='{0:.3f}s')
 	lmem  = twax.barh(indx - 0.9, tuple(inst.storage_space / 1024.**2 for inst in insts), height=height, color=next(cm),
-		label='disk space', xerr=tuple(inst.storage_space for inst in insts))
+		label='disk space', xerr=tuple(inst.storage_space_std / 1024.**2 for inst in insts))
 	add_bar_labels(twax, lmem, load_times, fontsize=fontsize-3, template='{0:.2f}Mb')
 	ax.set_ylim([- len(insts), 0])
 	ax.set_xlim([0, xlim])
@@ -42,7 +42,6 @@ def plot_results(insts, fname='benchmark.png'):
 	twax.tick_params(axis='both', which='major', labelsize=fontsize-1)
 	ax.set_yticks(indx - 0.5)
 	ax.set_yticklabels(names)
-	# ax.set_xscale('log')
 	ax.set_xlabel('average save/load time (s)', fontsize=fontsize)
 	twax.set_xlabel('disk space use (Mb)', fontsize=fontsize)
 	ax.grid(axis='y')

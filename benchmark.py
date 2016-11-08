@@ -35,6 +35,9 @@ class Benchmark(object):
 	@property
 	def save_time(self):
 		assert self.done
+		mn, mx = mean(tuple(inst.save_time for inst in self.done)), max(tuple(inst.save_time for inst in self.done))
+		if mx > 2 * mn:
+			print(self.cls.__name__, mn, mx)
 		return mean(tuple(inst.save_time for inst in self.done))
 	
 	@property

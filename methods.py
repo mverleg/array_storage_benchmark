@@ -3,13 +3,11 @@ import gzip
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from genericpath import getsize
 from os import fsync, remove
-from os.path import join
 from pickle import dump as pkl_dump, load as pkl_load
-from tempfile import mkdtemp
 from time import time
 from fortranfile import FortranFile
 from json_tricks import dump as jt_dump, load as jt_load
-from numpy import mean, array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array, std
+from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
 from scipy.io import savemat, loadmat
 from imgarray import save_array_img, load_array_img
 
@@ -26,36 +24,13 @@ class TimeArrStorage(object):
 	extension = 'data'
 	
 	def __init__(self, reps=100):
-		self.save_times = []
-		self.load_times = []
-		self.storage_spaces = []
-		self.reps = int(reps)
-		self.paths = tuple(join(mkdtemp(), self.__class__.__name__.lower() + '{0:03d}.{1:s}'
-			.format(k, self.extension)) for k in range(self.reps))
-	
-	@property
-	def save_time(self):
-		return mean(self.save_times)
-	
-	@property
-	def load_time(self):
-		return mean(self.load_times)
-	
-	@property
-	def storage_space(self):
-		return mean(self.storage_spaces)
-	
-	@property
-	def save_time_std(self):
-		return std(self.save_times)
-	
-	@property
-	def load_time_std(self):
-		return std(self.load_times)
-	
-	@property
-	def storage_space_std(self):
-		return std(self.storage_spaces)
+		# self.path = 'data-{0:s}.{1:s}'.format(self.__class__.__name__, self.extension)
+		self.save_time = None
+		self.load_time = None
+		self.storage_space = None
+		# self.reps = int(reps)
+		# self.paths = tuple(join(mkdtemp(), self.__class__.__name__.lower() + '{0:03d}.{1:s}'
+		# 	.format(k, self.extension)) for k in range(self.reps))
 	
 	def __str__(self):
 		return self.__class__.__name__
@@ -67,26 +42,23 @@ class TimeArrStorage(object):
 	def load(self, pth):
 		raise NotImplementedError
 	
-	def time_save(self, arr):
-		for pth in self.paths:
-			t0 = time()
-			self.save(arr, pth)
-			self.save_times.append((time() - t0))
-		self.storage_spaces = tuple(getsize(pth) for pth in self.paths)
+	def time_save(self, arr, pth):
+		# for pth in self.paths:
+		t0 = time()
+		self.save(arr, pth)
+		self.save_time = time() - t0
+		self.storage_space = getsize(pth)
 	
-	def time_load(self, ref_arr):
-		arr = None
-		for pth in self.paths:
-			t0 = time()
-			arr = self.load(pth)
-			self.load_times.append((time() - t0))
-		self.storage_spaces = tuple(getsize(pth) for pth in self.paths)
-		for pth in self.paths:
-			remove(pth)
+	def time_load(self, ref_arr, pth):
+		t0 = time()
+		arr = self.load(pth)
+		self.load_time = time() - t0
+		# self.storage_spaces = getsize(pth)
+		remove(pth)
 		assert array_equal(arr, ref_arr), 'load failed for {0:}'.format(self)
 	
-	def log(self):
-		print('{0:12s}  {1:8.6f}s  {2:8.6f}s  {3:6.0f}kb'.format(self, self.save_time, self.load_time, self.storage_space/1024.))
+	# def log(self):
+	# 	print('{0:12s}  {1:8.6f}s  {2:8.6f}s  {3:6.0f}kb'.format(self, self.save_time, self.load_time, self.storage_space/1024.))
 
 
 class Csv(TimeArrStorage):

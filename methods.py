@@ -237,16 +237,16 @@ class HTML(TimeArrStorage):
 		print(arr)
 		with open(pth, 'w+') as fh:
 			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
-			DataFrame(data=arr, columns=colnames).to_html(fh, float_format='{:}')
+			DataFrame(data=arr, columns=colnames).to_html(fh, float_format=TODO, index=False)
 			sync(fh)
 
 	def load(self, pth):
 		with open(pth, 'r') as fh:
 			data = read_html(fh)[0]
-			arr = data.as_matrix(columns=data.columns[1:])
+			arr = data.as_matrix()#columns=data.columns[1:])
 			print(arr.dtype, arr.shape)
 			print(arr)
-			return data.as_matrix(columns=data.columns[1:])
+			return arr
 
 
 class Excel(TimeArrStorage):
@@ -254,14 +254,14 @@ class Excel(TimeArrStorage):
 		print(arr)
 		with open(pth, 'w+') as fh:
 			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
-			DataFrame(data=arr, columns=colnames).to_excel(fh, sheet_name='data')
+			DataFrame(data=arr, columns=colnames).to_excel(fh, sheet_name='data', index=False)
 			sync(fh)
 
 	def load(self, pth):
 		with open(pth, 'r') as fh:
 			data = read_excel(fh, sheetname='data')
 			print(data.as_matrix(columns=data.columns[1:]))
-			return data.as_matrix(columns=data.columns[1:])
+			return data.as_matrix()
 
 
 
@@ -277,6 +277,7 @@ class Excel(TimeArrStorage):
 
 
 METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
 #html
 #excel
 #stata

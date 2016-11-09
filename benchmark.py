@@ -22,7 +22,6 @@ class Benchmark(object):
 			self.data_name = data_name
 		else:
 			self.data_name = str(hash(data.tobytes())).replace('-', '')[:8]
-		print(self.data_name)
 		self.reps = int(reps)
 		self.todo = []
 		self.done = []
@@ -95,7 +94,9 @@ def random_data(size, is_sparse=False, is_big=True):
 	else:
 		arr = rs.rand(*size).astype('float64')
 	if is_big:
-		arr = (2 * arr - 1) * 1.7976931348623157e+308
+		# arr = (2 * arr - 1) * 1.7976931348623157e+308
+		# don't use the full range, since some formats (Stata) uses the highest values for special meanings.
+		arr = (arr - 0.5) * 1.7976931348623157e+308
 	return arr
 
 
@@ -112,7 +113,7 @@ if __name__ == '__main__':
 		(load_example_data(), 'example', 'Real data'),
 	):
 		print '>> benchmark {0:s} <<'.format(name)
-		insts = tuple(Benchmark(cls, data, reps=reps) for cls in METHODS)
+		insts = tuple(Benchmark(cls, data, data_name=name, reps=reps) for cls in METHODS)
 		for bm in insts:
 			bm.run()
 			bm.log()

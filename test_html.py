@@ -18,7 +18,7 @@ pth = '/tmp/demo.dta'
 with open(pth, 'w+') as fh:
 	frame.to_html(fh, float_format=floatformat)
 with open(pth, 'r') as fh:
-	frame2 = read_html(fh)[0]
+	frame2 = read_html(fh, flavor='bs4')[0]
 
 assert frame.a[0] == frame2.a[0], floatformat(frame.a[0] - frame2.a[0])
 assert x == frame2.a[0]
@@ -49,5 +49,5 @@ assert x == frame2.a[0]
 # print('{:.24e}'.format(data[0, 0]))
 # print(float64('{:.24e}'.format(data[0, 0])))
 # assert (data == arr2).all()
-#
-#
+
+

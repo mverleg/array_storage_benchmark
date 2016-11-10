@@ -18,7 +18,7 @@ Csv~       comma separated value    ☐ ☐ ☐    ☐ ☐ ☐    ☒ ☒ ☒   
 JSON~      js object notation       ☐ ☐ ☐    ☐ ☐ ☐    ☒ ☒ ☐         ☒ ☒ ☐ ++      ☒ ☐              ☒ ☒         any dim, unequal rows
 b64Enc     base 64 encoding         ☒ ☒ ☒    ☒ ☐ ☐    ☒ ☒ ☐         ☒ ☒ ☐         ☐ ☐              ☐ ☐         more network, not files
 Pickle~    python pickle            ☒ ☒ ☐    ☐ ☐ ☐    ☐ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☒ ☒         any obj, not backw. comp
-Binary~    pure raw data            ☒ ☒ ☒    ☒ ☒ ?    ☒ ☒ ☒         ☒ ☐ ☐         ☐ ☐              ☐ ☐         dim & type separately
+Binary~    pure raw data            ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☒         ☒ ☐ ☐         ☐ ☐              ☐ ☐         dim & type separately
 NPY        numpy .npy (no pickle)   ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☒ ☐         with pickle mode OFF
 NPYCompr   numpy .npz               ☒ ☒ ☒    ☒ ☒ ☒    ☒ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☒ ☐         multiple matrices
 PNG        encoded as png image     ☒ ☒ ☐    ☒ ☒ ☒    ☐ ☐ ☐         ☐ ☐ ☐ ++      ☐ ☐              ☐ ☐         only 2D; for fun but works

@@ -48,9 +48,11 @@ class TimeArrStorage(object):
 	def time_load(self, ref_arr, pth):
 		t0 = time()
 		arr = self.load(pth)
+		sm = arr.sum()  # this is necessary to make sure it isn't lazy-loaded
 		self.load_time = time() - t0
 		remove(pth)
 		assert array_equal(arr, ref_arr), 'load failed for {0:}'.format(self)
+		return sm
 	
 
 class Csv(TimeArrStorage):

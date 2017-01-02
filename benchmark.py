@@ -112,7 +112,7 @@ if __name__ == '__main__':
 		(random_data((100000, 3), is_big=False), 'long', 'Long array'),
 		(load_example_data(), 'example', 'Real data'),
 	):
-		print '>> benchmark {0:s} <<'.format(name)
+		print('>> benchmark {0:s} <<'.format(name))
 		insts = tuple(Benchmark(cls, data, data_name=name, reps=reps) for cls in METHODS)
 		for bm in insts:
 			bm.run()

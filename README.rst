@@ -32,6 +32,8 @@ MatFile    Matlab .mat file         ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☐   
 + Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
 ++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
 
+csv and NPY were done with `numpy`_; json was done with `pyjson_tricks`_; png was done with `imgarray`_; fortran unformatted was done with `fortranfile`_; matlab was done with `scipy`_; pickle, base64 and gzipping were done with python built-ins.
+
 Results
 ---------------------------------------
 
@@ -60,5 +62,12 @@ More methods
 ---------------------------------------
 
 Pull requests with other methods (serious or otherwise) are welcome! There might be some ideas in the issue tracker.
+
+
+.. _`numpy`: https://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html
+.. _`pyjson_tricks`: https://github.com/mverleg/pyjson_tricks
+.. _`imgarray`: https://github.com/mverleg/imgarray
+.. _`fortranfile_`: https://pypi.python.org/pypi/fortranfile/0.2.1
+.. _`scipy`: https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.io.loadmat.html#scipy.io.loadmat
 
 

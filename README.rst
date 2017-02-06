@@ -26,11 +26,11 @@ FortUnf    fortran unformatted      ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☐ ☐   
 MatFile    Matlab .mat file         ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☐         ☒ ☒ ☒ +       ☐ ☐              ☒ ☐         multiple matrices
 =========  =======================  =======  =======  ============  ============  ===============  ==========  ===========================
 
-^ Two checks if it's small for dense data, three checks if also for sparse. All gzipped results are small for sparse data.
-% E.g. easily supports 3D or higher arrays, unequal columns, inhomogeneous type columns...
-~ Also tested with gzip, stats refer to non-gzipped. Gzipped is always much slower to write, a slower to read, for text formats it's at least 50% smaller.
-+ Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
-++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
+* ^ Two checks if it's small for dense data, three checks if also for sparse. All gzipped results are small for sparse data.
+* % E.g. easily supports 3D or higher arrays, unequal columns, inhomogeneous type columns...
+* ~ Also tested with gzip, stats refer to non-gzipped. Gzipped is always much slower to write, a slower to read, for text formats it's at least 50% smaller.
+* + Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
+* ++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
 
 csv and NPY were done with `numpy`_; json was done with `pyjson_tricks`_; png was done with `imgarray`_; fortran unformatted was done with `fortranfile`_; matlab was done with `scipy`_; pickle, base64 and gzipping were done with python built-ins.
 

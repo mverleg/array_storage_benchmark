@@ -69,5 +69,7 @@ Pull requests with other methods (serious or otherwise) are welcome! There might
 .. _`imgarray`: https://github.com/mverleg/imgarray
 .. _`fortranfile`: https://pypi.python.org/pypi/fortranfile/0.2.1
 .. _`scipy`: https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.io.loadmat.html#scipy.io.loadmat
+.. _`pandas`: http://pandas.pydata.org/
+
 
 

@@ -38,11 +38,6 @@ class Benchmark(object):
 	@property
 	def save_time(self):
 		assert self.done
-		# mn, mx, st = mean(tuple(inst.save_time for inst in self.done)), max(tuple(inst.save_time for inst in self.done)), std(tuple(inst.save_time for inst in self.done))
-		# if mx > 2 * mn:  #todo
-		# 	print('max', self.cls.__name__, mn, mx)
-		# if st > 0.2 * mn:
-		# 	print('std', self.cls.__name__, mn, st)
 		return mean(tuple(inst.save_time for inst in self.done))
 	
 	@property
@@ -94,14 +89,13 @@ def random_data(size, is_sparse=False, is_big=True):
 	else:
 		arr = rs.rand(*size).astype('float64')
 	if is_big:
-		# arr = (2 * arr - 1) * 1.7976931348623157e+308
 		# don't use the full range, since some formats (Stata) uses the highest values for special meanings.
 		arr = (arr - 0.5) * 1.7976931348623157e+308
 	return arr
 
 
 def load_example_data():
-	return loadtxt(join(environ['HOME'], 'testdata.csv'), delimiter=',')
+	return loadtxt('testdata.csv', delimiter=',')
 
 
 if __name__ == '__main__':

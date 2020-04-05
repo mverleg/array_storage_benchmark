@@ -5,11 +5,12 @@ from genericpath import getsize
 from os import fsync, remove
 from pickle import dump as pkl_dump, load as pkl_load
 from time import time
-from fortranfile import FortranFile
+
+import json_tricks
 from json_tricks import dump as jt_dump, load as jt_load
 from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
 from pandas import read_stata, DataFrame, read_html, read_excel
-from scipy.io import savemat, loadmat
+from scipy.io import savemat, loadmat, FortranFile
 from imgarray import save_array_img, load_array_img
 
 
@@ -152,6 +153,17 @@ class NPY(TimeArrStorage):
 		return np_load(pth)
 
 
+class CompactJsonTricks(TimeArrStorage):
+	extension = 'json.gz'
+	def save(self, arr, pth):
+		with open(pth, 'wb+') as fh:
+			json_tricks.dump(fh, arr, compression=True, properties={'ndarray_compact': True})
+			sync(fh)
+
+	def load(self, pth):
+		return json_tricks.load(pth)
+
+
 class NPYCompr(TimeArrStorage):
 	extension = 'npz'
 	def save(self, arr, pth):
@@ -235,25 +247,20 @@ class Stata(TimeArrStorage):
 
 class HTML(TimeArrStorage):
 	def save(self, arr, pth):
-		print(arr.dtype, arr.shape)
-		print(arr)
 		with open(pth, 'w+') as fh:
 			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
-			DataFrame(data=arr, columns=colnames).to_html(fh, float_format=TODO, index=False)
+			DataFrame(data=arr, columns=colnames).to_html(fh, index=False)
 			sync(fh)
 
 	def load(self, pth):
 		with open(pth, 'r') as fh:
 			data = read_html(fh)[0]
 			arr = data.as_matrix()#columns=data.columns[1:])
-			print(arr.dtype, arr.shape)
-			print(arr)
 			return arr
 
 
 class Excel(TimeArrStorage):
 	def save(self, arr, pth):
-		print(arr)
 		with open(pth, 'w+') as fh:
 			colnames = tuple('c{0:03d}'.format(k) for k in range(arr.shape[1]))
 			DataFrame(data=arr, columns=colnames).to_excel(fh, sheet_name='data', index=False)
@@ -262,7 +269,6 @@ class Excel(TimeArrStorage):
 	def load(self, pth):
 		with open(pth, 'r') as fh:
 			data = read_excel(fh, sheetname='data')
-			print(data.as_matrix(columns=data.columns[1:]))
 			return data.as_matrix()
 
 
@@ -278,8 +284,8 @@ class Excel(TimeArrStorage):
 #todo: pytables
 
 
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, CompactJsonTricks, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, CompactJsonTricks, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
 #html
 #excel
 #stata

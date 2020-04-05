@@ -1,17 +1,17 @@
 
 import gzip
-from base64 import urlsafe_b64encode, urlsafe_b64decode
+from base64 import b64encode, b64decode
 from genericpath import getsize
 from os import fsync, remove
 from pickle import dump as pkl_dump, load as pkl_load
 from time import time
 
 import json_tricks
+from imgarray import save_array_img, load_array_img
 from json_tricks import dump as jt_dump, load as jt_load
 from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
 from pandas import read_stata, DataFrame, read_html, read_excel
 from scipy.io import savemat, loadmat, FortranFile
-from imgarray import save_array_img, load_array_img
 
 
 def sync(fh):
@@ -188,14 +188,14 @@ class PNG(TimeArrStorage):
 class b64Enc(TimeArrStorage):
 	def save(self, arr, pth):
 		with open(pth, 'w+') as fh:
-			fh.write(b'{0:s} {1:d} {2:d}\n'.format(arr.dtype, *arr.shape))
-			fh.write(urlsafe_b64encode(arr.data))
+			fh.write('{0:} {1:} {2:}\n'.format(arr.dtype, arr.shape[0], arr.shape[1]).encode('ascii'))
+			fh.write(b64encode(arr.data))
 			sync(fh)
 
 	def load(self, pth):
 		with open(pth, 'r') as fh:
 			dtype, w, h = str(fh.readline()).split()
-			return frombuffer(urlsafe_b64decode(fh.read()), dtype=dtype).reshape((int(w), int(h)))
+			return frombuffer(b64decode(fh.read()), dtype=dtype).reshape((int(w), int(h)))
 
 
 class FortUnf(TimeArrStorage):

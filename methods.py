@@ -157,11 +157,11 @@ class CompactJsonTricks(TimeArrStorage):
 	extension = 'json.gz'
 	def save(self, arr, pth):
 		with open(pth, 'wb+') as fh:
-			json_tricks.dump(fh, arr, compression=True, properties={'ndarray_compact': True})
+			jt_dump(fh, arr, compression=True, properties={'ndarray_compact': True})
 			sync(fh)
 
 	def load(self, pth):
-		return json_tricks.load(pth)
+		return jt_load(pth)
 
 
 class NPYCompr(TimeArrStorage):
@@ -188,8 +188,8 @@ class PNG(TimeArrStorage):
 class b64Enc(TimeArrStorage):
 	def save(self, arr, pth):
 		with open(pth, 'w+') as fh:
-			fh.write('{0:} {1:} {2:}\n'.format(arr.dtype, arr.shape[0], arr.shape[1]).encode('ascii'))
-			fh.write(b64encode(arr.data))
+			fh.write('{0:} {1:} {2:}\n'.format(arr.dtype, arr.shape[0], arr.shape[1]))
+			fh.write(b64encode(arr.data).decode('ascii'))
 			sync(fh)
 
 	def load(self, pth):

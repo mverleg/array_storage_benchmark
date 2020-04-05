@@ -28,7 +28,7 @@ MatFile    Matlab .mat file         ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☐   
 
 * ^ Two checks if it's small for dense data, three checks if also for sparse. All gzipped results are small for sparse data.
 * % E.g. easily supports 3D or higher arrays, unequal columns, inhomogeneous type columns...
-* ~ Also tested with gzip, stats refer to non-gzipped. Gzipped is always much slower to write, a slower to read, for text formats it's at least 50% smaller.
+* ~ Also tested with gzip, stats refer to non-gzipped. Gzipped is always much slower to write, a bit slower to read, for text formats it's at least 50% smaller.
 * + Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
 * ++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
 

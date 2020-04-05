@@ -5,5 +5,5 @@ imgarray
 matplotlib
 seaborn
 pandas
-json-tricks
+json-tricks>=3.15.0
 lxml

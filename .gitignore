@@ -3,3 +3,4 @@
 *.png
 *.json
 .idea/
+cache/

@@ -97,27 +97,31 @@ class JSONGzip(TimeArrStorage):
 class Binary(TimeArrStorage):
 	def save(self, arr, pth):
 		with open(pth, 'wb+') as fh:
-			fh.write(b'{0:s} {1:d} {2:d}\n'.format(arr.dtype, *arr.shape))
+			fh.write('{0:} {1:} {2:}\n'.format(arr.dtype, arr.shape[0], arr.shape[1]).encode('ascii'))
 			fh.write(arr.data)
 			sync(fh)
 
 	def load(self, pth):
 		with open(pth, 'rb') as fh:
-			dtype, w, h = str(fh.readline()).split()
-			return frombuffer(fh.read(), dtype=dtype).reshape((int(w), int(h)))
+			header = fh.readline()
+			data = fh.read()
+		dtype, w, h = header.decode('ascii').strip().split()
+		return frombuffer(data, dtype=dtype).reshape((int(w), int(h)))
 
 
 class BinaryGzip(TimeArrStorage):
 	def save(self, arr, pth):
 		with gzip.open(pth, 'wb+') as fh:
-			fh.write(b'{0:s} {1:d} {2:d}\n'.format(arr.dtype, *arr.shape))
+			fh.write('{0:} {1:} {2:}\n'.format(arr.dtype, arr.shape[0], arr.shape[1]).encode('ascii'))
 			fh.write(arr.data)
 			sync(fh)
 
 	def load(self, pth):
 		with gzip.open(pth, 'rb') as fh:
-			dtype, w, h = str(fh.readline()).split()
-			return frombuffer(fh.read(), dtype=dtype).reshape((int(w), int(h)))
+			header = fh.readline()
+			data = fh.read()
+		dtype, w, h = header.decode('ascii').strip().split()
+		return frombuffer(data, dtype=dtype).reshape((int(w), int(h)))
 
 
 class Pickle(TimeArrStorage):
@@ -157,11 +161,11 @@ class CompactJsonTricks(TimeArrStorage):
 	extension = 'json.gz'
 	def save(self, arr, pth):
 		with open(pth, 'wb+') as fh:
-			jt_dump(fh, arr, compression=True, properties={'ndarray_compact': True})
+			jt_dump([arr], fh, compression=True, properties={'ndarray_compact': True})
 			sync(fh)
 
 	def load(self, pth):
-		return jt_load(pth)
+		return jt_load(pth)[0]
 
 
 class NPYCompr(TimeArrStorage):

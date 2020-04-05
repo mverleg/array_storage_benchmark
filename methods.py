@@ -6,10 +6,10 @@ from os import fsync, remove
 from pickle import dump as pkl_dump, load as pkl_load
 from time import time
 
-import json_tricks
 from imgarray import save_array_img, load_array_img
 from json_tricks import dump as jt_dump, load as jt_load
-from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array
+from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array, \
+	float64
 from pandas import read_stata, DataFrame, read_html, read_excel
 from scipy.io import savemat, loadmat, FortranFile
 
@@ -205,17 +205,17 @@ class b64Enc(TimeArrStorage):
 class FortUnf(TimeArrStorage):
 	# this implementation assumes float64
 	def save(self, arr, pth):
-		with FortranFile(pth, mode='wb+') as fh:
+		with FortranFile(pth, mode='w') as fh:
 			for k in range(arr.shape[0]):
-				fh.writeReals(arr[k, :], prec='d')
-			sync(fh)
+				fh.write_record(arr[k, :])
+			# NOTE: no sync available for FortranFile
 
 	def load(self, pth):
 		rows = []
-		with FortranFile(pth, mode='rb') as fh:
+		with FortranFile(pth, mode='r') as fh:
 			try:
 				while True:
-					row = fh.readReals(prec='d')
+					row = fh.read_reals(dtype=float64)
 					rows.append(row)
 			except IOError:
 				pass

@@ -1,5 +1,4 @@
 
-from os import environ
 from os.path import join, exists
 from sys import argv
 from tempfile import mkdtemp

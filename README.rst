@@ -32,7 +32,7 @@ MatFile    Matlab .mat file         ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☐   
 * + Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
 * ++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
 
-You can install all dependencies using `pip install -r rements.pip`. csv and NPY were done with `numpy`_; json was done with `pyjson_tricks`_; png was done with `imgarray`_; fortran unformatted was done with `fortranfile`_; matlab was done with `scipy`_; pickle, base64 and gzipping were done with python built-ins. `pandas`_ is needed for stata (not ready yet) statai files. Seaborn is needed for plotting. You can install all dependencies using `pip install requirements.pip`
+You can install all dependencies using `pip install -r requirements.pip`. csv and NPY were done with `numpy`_; json was done with `pyjson_tricks`_; png was done with `imgarray`_; fortran unformatted was done with `fortranfile`_; matlab was done with `scipy`_; pickle, base64 and gzipping were done with python built-ins. `pandas`_ is needed for stata (not ready yet) statai files. Seaborn is needed for plotting. You can install all dependencies using `pip install requirements.pip`
 
 Results
 ---------------------------------------

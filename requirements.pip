@@ -2,8 +2,8 @@ numpy
 scipy
 json-tricks
 imgarray
-fortranfile
 matplotlib
 seaborn
 pandas
-
+json-tricks
+lxml

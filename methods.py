@@ -157,7 +157,7 @@ class NPY(TimeArrStorage):
 		return np_load(pth)
 
 
-class CompactJsonTricks(TimeArrStorage):
+class JsonTricks(TimeArrStorage):
 	extension = 'json.gz'
 	def save(self, arr, pth):
 		with open(pth, 'wb+') as fh:
@@ -165,7 +165,7 @@ class CompactJsonTricks(TimeArrStorage):
 			sync(fh)
 
 	def load(self, pth):
-		return jt_load(pth)[0]
+		return jt_load(pth, ignore_comments=False)[0]
 
 
 class NPYCompr(TimeArrStorage):
@@ -288,8 +288,9 @@ class Excel(TimeArrStorage):
 #todo: pytables
 
 
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, CompactJsonTricks, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, CompactJsonTricks, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, JsonTricks, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
+METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, JsonTricks, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf) #todo: Stata
+
 #html
 #excel
 #stata

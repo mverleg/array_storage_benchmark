@@ -1,7 +1,7 @@
 
 import seaborn
 from matplotlib.pyplot import subplots
-from numpy import arange, mean, std
+from numpy import arange, max
 
 
 def add_bar_labels(ax, patches, values, xlim=None, fontsize=16, template='{0:.3f}'):
@@ -24,30 +24,30 @@ def plot_results(insts, fname='benchmark.png', suptitle='Benchmark result'):
 	indx = - arange(0, len(insts))
 	height = 0.2
 	twax = ax.twiny()
-	save_times = tuple(inst.save_time for inst in insts)
-	load_times = tuple(inst.save_time for inst in insts)
-	xlim = mean(save_times) + std(save_times)
+	save_times = tuple(inst.save_time * 1000 for inst in insts)
+	load_times = tuple(inst.load_time * 1000 for inst in insts)
+	xlim = sorted(save_times)[-5]
 	lsave = ax.barh(indx - 0.3, save_times, height=height, color=next(cm), label='store',
-		xerr=tuple(inst.save_time_std for inst in insts))
-	add_bar_labels(ax, lsave, save_times, xlim=xlim, fontsize=fontsize-3, template='{0:.3f}s')
-	lload = ax.barh(indx - 0.6, tuple(inst.load_time for inst in insts), height=height, color=next(cm), label='retrieve',
-		xerr=tuple(inst.load_time_std for inst in insts))
-	add_bar_labels(ax, lload, load_times, xlim=xlim, fontsize=fontsize-3, template='{0:.3f}s')
-	lmem  = twax.barh(indx - 0.9, tuple(inst.storage_space / 1024.**2 for inst in insts), height=height, color=next(cm),
-		label='disk space', xerr=tuple(inst.storage_space_std / 1024.**2 for inst in insts))
-	add_bar_labels(twax, lmem, load_times, fontsize=fontsize-3, template='{0:.2f}Mb')
+		xerr=tuple(inst.save_time_std * 1000 for inst in insts))
+	add_bar_labels(ax, lsave, save_times, xlim=xlim, fontsize=fontsize-3, template='{0:.0f}ms')
+	lload = ax.barh(indx - 0.6, load_times, height=height, color=next(cm), label='retrieve',
+		xerr=tuple(inst.load_time_std * 1000 for inst in insts))
+	add_bar_labels(ax, lload, load_times, xlim=xlim, fontsize=fontsize-3, template='{0:.0f}ms')
+	lmem  = twax.barh(indx - 0.9, tuple(inst.storage_space / 1024. for inst in insts), height=height, color=next(cm),
+		label='disk space', xerr=tuple(inst.storage_space_std / 1024. for inst in insts))
+	add_bar_labels(twax, lmem, load_times, fontsize=fontsize-3, template='{0:.2f}kb')
 	ax.set_ylim([- len(insts), 0])
 	ax.set_xlim([0, xlim])
 	ax.tick_params(axis='both', which='major', labelsize=fontsize-1)
 	twax.tick_params(axis='both', which='major', labelsize=fontsize-1)
 	ax.set_yticks(indx - 0.5)
 	ax.set_yticklabels(names)
-	ax.set_xlabel('average save/load time (s)', fontsize=fontsize)
-	twax.set_xlabel('disk space use (Mb)', fontsize=fontsize)
+	ax.set_xlabel('average save/load time (ms)', fontsize=fontsize)
+	twax.set_xlabel('disk space use (kb)', fontsize=fontsize)
 	ax.grid(axis='y')
 	twax.grid('off')
 	ax.legend((lsave, lload, lmem), ('store', 'retrieve', 'disk space'), loc='lower right', fontsize=fontsize, frameon=True)
-	fig.suptitle(suptitle, fontsize=fontsize+2)
+	fig.suptitle(suptitle, fontsize=fontsize+1)
 	fig.savefig(fname)
 	return fig, ax
 

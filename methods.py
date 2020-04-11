@@ -276,22 +276,32 @@ class Excel(TimeArrStorage):
 			return data.as_matrix()
 
 
+class HDF5(TimeArrStorage):
+	def save(self, arr, pth):
+		raise NotImplementedError
 
-#todo: pandas formats - http://pandas.pydata.org/pandas-docs/stable/io.html
-# hdf5
-# sql
-
-#todo: hdf5 - http://stackoverflow.com/a/9619713/723090
-
-#todo: bloscpack http://stackoverflow.com/a/22225337/723090
-
-#todo: pytables
+	def load(self, pth):
+		raise NotImplementedError
 
 
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, HTML, b64Enc, JsonTricks, Excel, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf, MatFile) #todo: Stata
-METHODS = (Csv, CsvGzip, JSON, JSONGzip, b64Enc, JsonTricks, Pickle, PickleGzip, Binary, BinaryGzip, NPY, NPYCompr, PNG, FortUnf) #todo: Stata
-
-#html
-#excel
-#stata
-
+METHODS = (
+	Csv,
+	CsvGzip,
+	JSON,
+	JSONGzip,
+	b64Enc,
+	JsonTricks,
+	Pickle,
+	PickleGzip,
+	Binary,
+	BinaryGzip,
+	NPY,
+	NPYCompr,
+	HDF5,
+	PNG,
+	FortUnf,
+	# Excel,
+	# HTML,
+	# MatFile,
+	# Stata,
+)

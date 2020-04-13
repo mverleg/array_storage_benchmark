@@ -17,6 +17,8 @@ Name       Description              Fast     Small^   Portability   Ease of use 
 Csv~       comma separated value    ☐ ☐ ☐    ☐ ☐ ☐    ☒ ☒ ☒         ☒ ☒ ☒         ☒ ☒              ☒ ☐         only 2D
 JSON~      js object notation       ☐ ☐ ☐    ☐ ☐ ☐    ☒ ☒ ☐         ☒ ☒ ☐ ++      ☒ ☐              ☒ ☒         any dim, unequal rows
 b64Enc     base 64 encoding         ☒ ☒ ☒    ☒ ☐ ☐    ☒ ☒ ☐         ☒ ☒ ☐         ☐ ☐              ☐ ☐         more network, not files
+JsonTricks json-tricks compact      ☒ ☒ ☐    ☒ ☒ ☐    ☒ ☐ ☐         ☒ ☒ ☒ +       ☐ ☐              ☒ ☒         many types beyond numpy
+MsgPack    Binary version of json   ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☐ ☐         ☒ ☒ ☐ +       ☐ ☐              ☒ ☐
 Pickle~    python pickle            ☒ ☒ ☐    ☐ ☐ ☐    ☐ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☒ ☒         any obj, not backw. comp
 Binary~    pure raw data            ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☒         ☒ ☐ ☐         ☐ ☐              ☐ ☐         dim & type separately
 NPY        numpy .npy (no pickle)   ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☐ ☐         ☒ ☒ ☒         ☐ ☐              ☒ ☐         with pickle mode OFF
@@ -32,7 +34,7 @@ MatFile    Matlab .mat file         ☒ ☒ ☒    ☒ ☒ ☐    ☒ ☒ ☐   
 * + Rating refers to using a semi-popular package (probably scipy), as opposed to only python and numpy.
 * ++ Very easy (☒☒☒) with an unpopular and/or dedicated package, but the rating refers to only python and numpy.
 
-You can install all dependencies using `pip install -r requirements.pip`. csv and NPY were done with `numpy`_; json was done with `pyjson_tricks`_; png was done with `imgarray`_; fortran unformatted was done with `fortranfile`_; matlab was done with `scipy`_; pickle, base64 and gzipping were done with python built-ins. `pandas`_ is needed for stata (not ready yet) statai files. Seaborn is needed for plotting. You can install all dependencies using `pip install requirements.pip`
+You can install all dependencies using `pip install -r requirements.pip`. csv and NPY were done with `numpy`_; json and compact json (JsonTricks) were done with `pyjson_tricks`_; png was done with `imgarray`_; fortran unformatted and matlab were done with `scipy`_; pickle, base64 and gzipping were done with python built-ins. HDF5 uses `h5py` (not finished, see issue4_). MessagePack uses `msgpack-numpy`. Seaborn is needed for plotting. You can install all dependencies using `pip install requirements.pip`
 
 Results
 ---------------------------------------
@@ -70,6 +72,6 @@ Pull requests with other methods (serious or otherwise) are welcome! There might
 .. _`fortranfile`: https://pypi.python.org/pypi/fortranfile/0.2.1
 .. _`scipy`: https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.io.loadmat.html#scipy.io.loadmat
 .. _`pandas`: http://pandas.pydata.org/
-
+.. _issue4: https://github.com/mverleg/array_storage_benchmark/issues/4
 
 

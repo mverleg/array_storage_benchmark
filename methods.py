@@ -32,9 +32,10 @@ class TimeArrStorage(object):
 		self.save_time = None
 		self.load_time = None
 		self.storage_space = None
-	
-	def __str__(self):
-		return self.__class__.__name__
+
+	@classmethod
+	def method_name(cls):
+		return cls.__name__
 	
 	def save(self, arr, pth):
 		# implementations have to call `sync`!
@@ -283,7 +284,7 @@ class HDF5(TimeArrStorage):
 	def name(self, pth):
 		return 'bench_{}'.format(path.basename(pth).replace('.', '_'))
 
-	def __str__(self):
+	def method_name(self):
 		return 'HDF5(?)'
 
 	def save(self, arr, pth):
@@ -300,7 +301,7 @@ class HDF5(TimeArrStorage):
 
 
 class HDF5Gzip(HDF5):
-	def __str__(self):
+	def method_name(self):
 		return 'HDF5(?)Gzip'
 
 	def save(self, arr, pth):
@@ -328,17 +329,17 @@ METHODS = (
 	JSONGzip,
 	b64Enc,
 	JsonTricks,
+	MsgPack,
 	Pickle,
 	PickleGzip,
 	Binary,
 	BinaryGzip,
 	NPY,
 	NPYCompr,
-	HDF5,
-	HDF5Gzip,
+	# HDF5,
+	# HDF5Gzip,
 	PNG,
 	FortUnf,
-	MsgPack,
 	# Excel,
 	# HTML,
 	# MatFile,

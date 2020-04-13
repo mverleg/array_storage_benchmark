@@ -13,6 +13,7 @@ from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, lo
 from pandas import read_stata, DataFrame, read_html, read_excel
 from scipy.io import savemat, loadmat, FortranFile
 import h5py
+from numproto import ndarray_to_proto, proto_to_ndarray
 
 
 def sync(fh):
@@ -153,7 +154,7 @@ class NPY(TimeArrStorage):
 		with open(pth, 'wb+') as fh:
 			np_save(fh, arr, allow_pickle=False)
 			sync(fh)
-		
+
 	def load(self, pth):
 		return np_load(pth)
 
@@ -307,6 +308,17 @@ class HDF5Gzip(HDF5):
 			fh.flush()
 
 
+class Protobuf(TimeArrStorage):
+	def save(self, arr, pth):
+		with open(pth, 'w+') as fh:
+			fh.write(ndarray_to_proto(arr))
+			sync(fh)
+
+	def load(self, pth):
+		with open(pth, 'r') as fh:
+			return proto_to_ndarray(fh.read())
+
+
 METHODS = (
 	Csv,
 	CsvGzip,
@@ -320,10 +332,11 @@ METHODS = (
 	BinaryGzip,
 	NPY,
 	NPYCompr,
-	HDF5,
-	HDF5Gzip,
+	# HDF5,
+	# HDF5Gzip,
 	PNG,
 	FortUnf,
+	Protobuf,
 	# Excel,
 	# HTML,
 	# MatFile,

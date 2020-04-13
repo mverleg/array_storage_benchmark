@@ -2,7 +2,7 @@
 import gzip
 from base64 import b64encode, b64decode
 from genericpath import getsize
-from os import fsync, remove
+from os import fsync, remove, path
 from pickle import dump as pkl_dump, load as pkl_load
 from time import time
 
@@ -12,6 +12,7 @@ from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, lo
 	float64
 from pandas import read_stata, DataFrame, read_html, read_excel
 from scipy.io import savemat, loadmat, FortranFile
+import h5py
 
 
 def sync(fh):
@@ -277,11 +278,33 @@ class Excel(TimeArrStorage):
 
 
 class HDF5(TimeArrStorage):
+	def name(self, pth):
+		return 'bench_{}'.format(path.basename(pth).replace('.', '_'))
+
+	def __str__(self):
+		return 'HDF5(?)'
+
 	def save(self, arr, pth):
-		raise NotImplementedError
+		with h5py.File(pth, 'w') as fh:
+			fh.create_dataset(self.name(pth), data=arr)
+			fh.flush()
 
 	def load(self, pth):
-		raise NotImplementedError
+		with h5py.File(pth, 'r') as fh:
+			data = fh[self.name(pth)][:]
+			# Do something with the data, as it is lazy-loaded
+			_ = data.min()
+			return data
+
+
+class HDF5Gzip(HDF5):
+	def __str__(self):
+		return 'HDF5(?)Gzip'
+
+	def save(self, arr, pth):
+		with h5py.File(pth, 'w') as fh:
+			fh.create_dataset(self.name(pth), compression='gzip', data=arr)
+			fh.flush()
 
 
 METHODS = (
@@ -298,6 +321,7 @@ METHODS = (
 	NPY,
 	NPYCompr,
 	HDF5,
+	HDF5Gzip,
 	PNG,
 	FortUnf,
 	# Excel,

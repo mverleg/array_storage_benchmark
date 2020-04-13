@@ -6,13 +6,15 @@ from os import fsync, remove, path
 from pickle import dump as pkl_dump, load as pkl_load
 from time import time
 
+import h5py
+import msgpack
+import msgpack_numpy
 from imgarray import save_array_img, load_array_img
 from json_tricks import dump as jt_dump, load as jt_load
 from numpy import array_equal, savetxt, loadtxt, frombuffer, save as np_save, load as np_load, savez_compressed, array, \
 	float64
 from pandas import read_stata, DataFrame, read_html, read_excel
 from scipy.io import savemat, loadmat, FortranFile
-import h5py
 
 
 def sync(fh):
@@ -307,6 +309,18 @@ class HDF5Gzip(HDF5):
 			fh.flush()
 
 
+class MsgPack(TimeArrStorage):
+	def save(self, arr, pth):
+		with open(pth, 'wb+') as fh:
+			bin = msgpack.packb(arr, default=msgpack_numpy.encode)
+			fh.write(bin)
+			sync(fh)
+
+	def load(self, pth):
+		with open(pth, 'rb') as fh:
+			return msgpack.unpackb(fh.read(), object_hook=msgpack_numpy.decode)
+
+
 METHODS = (
 	Csv,
 	CsvGzip,
@@ -324,6 +338,7 @@ METHODS = (
 	HDF5Gzip,
 	PNG,
 	FortUnf,
+	MsgPack,
 	# Excel,
 	# HTML,
 	# MatFile,
